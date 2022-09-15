@@ -2,11 +2,11 @@ body {
     font-family: 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
-    background: rgb(73, 40, 238);
+    
     background: linear-gradient(
-        90deg, rgb(97, 131, 243) 
-        0%, rgb(77, 52, 245) 
-        50%, rgb(69, 159, 244) 100%);
+        90deg, rgb(161, 179, 236) 
+        0%, rgb(118, 108, 186) 
+        50%, rgb(132, 181, 226) 100%);
 }
 
 .container {
@@ -97,6 +97,37 @@ main {
     text-align: center;
     border-radius: 2em;
 }
+
+#snackbar {
+    visibility: hidden;
+    position: fixed;
+    font-weight: bold;
+    font-size: 0.75rem;
+    background-color: #ccc;
+    padding: 0.75em 2em;
+    border-radius: 2em;
+    color: #070707;
+    text-align: center;
+    left: 50%;
+    transform: translate(-50%);
+    bottom: 1em;
+}
+
+#snackbar.show {
+    visibility: visible;
+    animation: fadein ease-out 0.5s, fadeout ease-out 0.5s 2.5s;
+} 
+
+ @keyframes fadein {
+    0% {bottom: 0; opacity: 0;}
+    100% {bottom: 1em; opacity: 1;}
+}
+
+@keyframes fadeout {
+    0% {bottom: 1em; opacity: 1;}
+    100% {bottom: 0; opacity: 0;}
+}
+
 
 @media (max-width: 40rem) {
     header {

@@ -7,26 +7,32 @@ const snackbar = document.getElementById("snackbar")
 const baseUrl = "https://www.thecolorapi.com/scheme"
 let schemes
 
+
+randomColor = Math.floor(Math.random() * 16777215)
+colorPicker.value = '#' + randomColor.toString(16)
 getColors()
+
 
 colorSchemeBtn.addEventListener("click", () => {
     getColors()
 })
 
+
 function getColors() {
     fetch(`${baseUrl}?hex=${colorPicker.value.slice(1)}&${colorModeSelect.value}`)
         .then(res => res.json())
         .then(data => {
-            printColors(data.colors)
-            console.log(data.colors.map((color)=> color.name.value))
+            renderColors(data.colors)
+            
             if (!schemes) {
                 schemes = data._links.schemes
-                makeSchemes()
+                addSchemeModes()
             }
         })
 }
 
-function makeSchemes() {
+
+function addSchemeModes() {
         Object.entries(schemes).forEach(
             ([name, value]) => {
                 colorModeSelect.add( 
@@ -35,13 +41,49 @@ function makeSchemes() {
         })
 }
 
-function printColors(colorsArray) {
+
+function renderColors(colorsArray) {
     mainEl.innerHTML = colorsArray.map(color => {
         return `
-            <div class="colors" style="background-color: ${color.hex.value}">
+            <div 
+                onclick="copyToClipboard('${color.hex.value}')"
+                class="colors" 
+                style="background-color: ${color.hex.value}">
                 <div class="color-name">${color.name.value}</div>
-                <p class="color-hex">${color.hex.value}</p>
+                
+                <p onclick="copyToClipboard('${color.hex.value}')" class="color-hex">
+                    ${color.hex.value}
+                </p>
             </div>
         `
-    }).join("")
+    }).join('')
+}
+
+
+function copyToClipboard(str) {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(str)
+            .then(() => {
+                showSnackbar()
+            }, error => { deprecatedCopyToClipboard(str) })
+    } else {
+        deprecatedCopyToClipboard(str)
+    }
+}
+
+
+function deprecatedCopyToClipboard(str) {
+    const area = document.createElement('textarea')
+    document.body.appendChild(area)
+    area.value = str
+    area.select()
+    document.execCommand('copy')
+    document.body.removeChild(area)
+    showSnackbar()
+}
+
+
+function showSnackbar() {
+    snackbar.className = "show"
+    setTimeout(() => snackbar.className = "", 2900)
 }
